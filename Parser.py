@@ -4,7 +4,7 @@ import re
 
 class Parser:
     """
-    The parser module parses text files with to retrieve JASPAR names and their
+    The Parser class parses text files with to retrieve JASPAR names and their
     targets which are in an AGI format. Information is stored in a dictionary,
     with the JASPAR names as keys and AGI targets as values.
 
@@ -21,7 +21,7 @@ class Parser:
         Initializes the parser module by opening the file.
 
         Args:
-            text_file: A text file, with JASPAR names and AGI targets
+            text_file (File): A text file, with JASPAR names and AGI targets
         """
         # Open file for reading
         self.text_file = open(file, "r")
@@ -47,17 +47,18 @@ class Parser:
             result = regex.match(line)
 
             # Get JASPAR and AGI if match found
-            name_jas = ""
-            name_agi = ""
-
             if result:
                 name_jas = result.group(1)
                 name_agi = result.group(2)
 
-            # Check if JASPAR name key exists in dictionary
-            if name_jas in self.interaction_dictionary:
-                # Appends agi target to list
-                self.interaction_dictionary[name_jas].append(name_agi)
-            else:
-                # Creates a new list of agi targets
-                self.interaction_dictionary[name_jas] = [name_agi]
+                # Check if JASPAR name key exists in dictionary
+                if name_jas in self.interaction_dictionary:
+                    # Appends agi target to list
+                    self.interaction_dictionary[name_jas].append(name_agi)
+                else:
+                    # Creates a new list of agi targets
+                    self.interaction_dictionary[name_jas] = [name_agi]
+
+if __name__ == "__main__":
+    parser = Parser("3000.csv.txt")
+    print((parser.interaction_dictionary.keys()))

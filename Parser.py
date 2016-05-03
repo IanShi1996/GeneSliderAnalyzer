@@ -26,19 +26,18 @@ class Parser:
         # Open file for reading
         self.text_file = open(file, "r")
         # Initialize interaction dictionary
-        self.interaction_dictionary = {}
-        # Parser data file
-        self.parse_data_set()
+        self.interaction_dictionary = self.parse_data_set()
         # Close reading file
         self.text_file.close()
 
     def parse_data_set(self):
-        """(Parser) -> None
+        """(Parser) -> Dictionary
 
-        Parses the data file to obtain a dictionary of JASPAR names and AGI
-        targets.
+        Return a dictionary of JASPAR names and AGI targets from a parsed
+        data file.
         """
-
+        # Dictionary to return
+        new_dictionary = {}
         # Regex to find JASPAR and AGI
         regex = re.compile("(MA\d\d\d\d\.1).(AT\dG\d\d\d\d\d)")
         # Reads all lines
@@ -52,13 +51,24 @@ class Parser:
                 name_agi = result.group(2)
 
                 # Check if JASPAR name key exists in dictionary
-                if name_jas in self.interaction_dictionary:
+                if name_jas in new_dictionary:
                     # Appends agi target to list
-                    self.interaction_dictionary[name_jas].append(name_agi)
+                    new_dictionary[name_jas].append(name_agi)
                 else:
                     # Creates a new list of agi targets
-                    self.interaction_dictionary[name_jas] = [name_agi]
+                    new_dictionary[name_jas] = [name_agi]
+        return new_dictionary
 
 if __name__ == "__main__":
-    parser = Parser("3000.csv.txt")
-    print((parser.interaction_dictionary.keys()))
+    user_input = input("Select file to parse:\n")
+
+    parser = Parser(user_input)
+
+    file_name = input("Select output file name:\n")
+
+    output = open(file_name, "w")
+
+    for key in parser.interaction_dictionary.keys():
+        for value in parser.interaction_dictionary.get(key):
+            output.write(key + "    " + value + "\n")
+    output.close()

@@ -66,6 +66,17 @@ class JasNameConverter:
         return new_dict
 
 if __name__ == "__main__":
-    parser = Parser.Parser("3000.csv.txt")
-    test = JasNameConverter(parser.interaction_dictionary)
-    print(test.interaction_dictionary_alias.get("MYC4"))
+
+    user_input = input("Enter data file\n")
+
+    parser = Parser.Parser(user_input)
+    converter = JasNameConverter(parser.interaction_dictionary)
+
+    file_name = input("Enter output file name\n")
+    output = open(file_name, "w")
+
+    for key in converter.interaction_dictionary_alias.keys():
+        for value in converter.interaction_dictionary_alias[key]:
+            output.write(key + "    " + value + "\n")
+
+    output.close()

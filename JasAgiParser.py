@@ -70,5 +70,5 @@ if __name__ == "__main__":
 
     for key in parser.interaction_dictionary.keys():
         for value in parser.interaction_dictionary.get(key):
-            output.write(key + "    " + value + "\n")
+            output.write(key + "\t" + value + "\n")
     output.close()

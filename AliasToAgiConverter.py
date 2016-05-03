@@ -2,6 +2,7 @@ __author__ = 'Ruian'
 
 from splinter import Browser
 
+
 def convert_alias_to_agi(alias):
     """(String) -> String
 
@@ -16,7 +17,7 @@ def convert_alias_to_agi(alias):
         # Selects gene alias conversion
         drop_down = browser.find_by_name("fromList")[0]
         drop_down.select("Gene Alias")
-        # Selects option dropdown
+        # Selects option drop down
         browser.find_by_css("body > form > button")[0].click()
         # Selects agi option
         browser.find_by_css("#ui-multiselect-toList-option-0")[0].check()
@@ -24,8 +25,8 @@ def convert_alias_to_agi(alias):
         browser.fill('input', alias)
 
         # Submits the query
-        browser.find_by_css('body > form > input['
-                               'type="submit"]:nth-child(14)')[0].click()
+        browser.find_by_css('body > form > '
+                            'input[''type="submit"]:nth-child(14)')[0].click()
 
         # Gets the agi value
         value = browser.find_by_xpath("//*[@id='table_id']/tbody/tr/td[2]")[0]

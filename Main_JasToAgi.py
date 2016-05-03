@@ -26,7 +26,5 @@ if __name__ == "__main__":
 
     for key in jas_convert_output.keys():
         for value in jas_convert_output[key]:
-            print(key, dict_agi[key], value)
-
-            output_file.write(dict_agi[key] + "   " + value + "\n")
+            output_file.write(dict_agi[key].upper() + "\t" + value + "\n")
     output_file.close()

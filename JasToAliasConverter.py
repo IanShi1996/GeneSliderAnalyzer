@@ -77,6 +77,6 @@ if __name__ == "__main__":
 
     for key in converter.interaction_dictionary_alias.keys():
         for value in converter.interaction_dictionary_alias[key]:
-            output.write(key + "    " + value + "\n")
+            output.write(key + "\t" + value + "\n")
 
     output.close()

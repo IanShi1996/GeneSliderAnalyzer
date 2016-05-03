@@ -42,7 +42,7 @@ class ExcelParser:
             excel_file.readline()
 
         # List to store results
-        results = self.populate_list(len(target_columns))
+        results = populate_list(len(target_columns))
         # Parse excel file
         curr_line = excel_file.readline()
         # Check for end of doc
@@ -53,7 +53,7 @@ class ExcelParser:
             matches = curr_line.split("\t")
 
             # Check if target columns are valid
-            if self.validate_column_number(target_columns, len(matches)):
+            if validate_column_number(target_columns, len(matches)):
                 for i in range(0, len(target_columns)):
                     results[i].append(matches[target_columns[i]])
             else:
@@ -65,93 +65,93 @@ class ExcelParser:
         excel_file.close()
         return results
 
-    def validate_column_number(self, target_columns, num_matches):
-        """ (ExcelParser, List of Int) -> boolean
 
-        Return whether any specific target column exceeds the number of
-        matches columns
+def validate_column_number(target_columns, num_matches):
+    """ (List of Int) -> boolean
 
-        Return: True if no target columns exceeds the number of matched ones.
-        """
+    Return whether any specific target column exceeds the number of
+    matches columns
 
-        for target in target_columns:
-            if target > num_matches:
-                return False
-        return True
+    Return: True if no target columns exceeds the number of matched ones.
+    """
 
-    def populate_list(self, target_columns):
-        """ (ExcelParser, Int) -> List of Lists
+    for target in target_columns:
+        if target > num_matches:
+            return False
+    return True
 
-        Return a list of size target_column of empty lists to be used in
-        storage of parsed data.
 
-        Args:
-            target_columns (Int): The number of lists to create
-        Return:
-            A list of size target_columns, filled with empty lists.
-        """
+def write_to_file(output_file_name, parsing_result):
+    """ (String, List of List of String) -> None
 
-        new_list = []
-        for num in range(0, target_columns):
-            new_list.append([])
-        return new_list
+    Write a file with the results from the parsing results using a tabs
+    delimited format.
 
-    def write_to_file(self, output_file_name, parsing_result):
-        """ (ExcelParser, String, List of List of String) -> None
+    Args:
+        output_file_name (String): The name of the file to write to.
+        parsing_result (List of List of String): The result from this
+            classes parsing methods to be written to a file.
+    """
+    # Open file for writing
+    output_file = open(output_file_name, "w")
 
-        Write a file with the results from the parsing results using a tabs
-        delimited format.
+    # Check if parsing result is valid
+    if validate_result(parsing_result):
+        # Write to file in tabs delimited
+        for i in range(0, len(parsing_result[0])):
+            output_line = parsing_result[0][i]
+            for j in range(1, len(parsing_result)):
+                output_line += ("\t" + parsing_result[j][i])
+            output_file.write(output_line + "\n")
 
-        Args:
-            output_file_name (String): The name of the file to write to.
-            parsing_result (List of List of String): The result from this
-                classes parsing methods to be written to a file.
-        """
-        # Oopen file for writing
-        output_file = open(output_file_name, "w")
+    else:
+        print("Parsing results may contain errors. Check again.")
 
-        # Check if parsing result is valid
-        if self.validate_result(parsing_result):
-            # Write to file in tabs delimited
-            for i in range(0, len(parsing_result[0])):
-                output_line = parsing_result[0][i]
-                for j in range(1, len(parsing_result)):
-                    output_line += ("\t" + parsing_result[j][i])
-                output_file.write(output_line + "\n")
 
-        else:
-            print("Parsing results may contain errors. Check again.")
+def validate_result(parsing_result):
+    """ (List of List of String) -> boolean
 
-    def validate_result(self, parsing_result):
-        """ (ExcelParser, List of List of String) -> boolean
+    Return whether the parsing result is of even length.
 
-        Return whether the parsing result is of even length.
+    Args:
+        parsing_result (List of List of String): The result from this
+            classes parsing methods
+    Return:
+        True if lengths are even
+    """
+    length = len(parsing_result[0])
 
-        Args:
-            parsing_result (List of List of String): The result from this
-                classes parsing methods
-        Return:
-            True if lengths are even
-        """
-        length = len(parsing_result[0])
+    for i in range(0, len(parsing_result)):
+        if len(parsing_result[i]) != length:
+            return False
+    return True
 
-        for i in range(0, len(parsing_result)):
-            if len(parsing_result[i]) != length:
-                return False
-        return True
+
+def populate_list(columns):
+    """ (Int) -> List of Lists
+
+    Return a list of size columns of empty lists to be used in
+    storage of parsed data.
+
+    Args:
+        columns (Int): The number of lists to create
+    Return:
+        A list of size columns, filled with empty lists.
+    """
+
+    new_list = []
+    for num in range(0, columns):
+        new_list.append([])
+    return new_list
 
 if __name__ == "__main__":
     target_file = input("Enter data file: \n")
     excel_parser = ExcelParser(target_file)
-    output_file = input("Enter output file name:\n")
-    target_columns = []
+    output = input("Enter output file name:\n")
+    tar_columns = []
     isDone = False
     while not isDone:
-        target_columns.append(int(input("Enter target column:\n")))
+        tar_columns.append(int(input("Enter target column:\n")))
         isDone = input("Done?(True/False)\n") == "True"
-    header = int(input("Input header count: \n"))
-    excel_parser.write_to_file(output_file,
-                               excel_parser.scrape_columns(target_columns,
-                                                           header))
-
-
+    head = int(input("Input header count: \n"))
+    write_to_file(output, excel_parser.scrape_columns(tar_columns, head))

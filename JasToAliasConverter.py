@@ -1,6 +1,6 @@
 __author__ = 'Ruian'
 
-import Parser
+import JasAgiParser
 import re
 
 class JasToAliasConverter:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     user_input = input("Enter data file\n")
 
-    parser = Parser.Parser(user_input)
+    parser = JasAgiParser.Parser(user_input)
     converter = JasToAliasConverter(parser.interaction_dictionary)
 
     file_name = input("Enter output file name\n")

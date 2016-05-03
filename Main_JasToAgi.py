@@ -1,13 +1,13 @@
 __author__ = 'Ruian'
 
-import Parser
+import JasAgiParser
 import JasToAliasConverter
 import AliasToAgiConverter
 
 
 if __name__ == "__main__":
     data_file = input("Enter data file:\n")
-    parser = Parser.Parser(data_file)
+    parser = JasAgiParser.Parser(data_file)
     parser_output = parser.interaction_dictionary
     jas_convert = JasToAliasConverter.JasToAliasConverter(parser_output)
     jas_convert_output = jas_convert.interaction_dictionary_alias

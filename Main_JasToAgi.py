@@ -16,7 +16,6 @@ if __name__ == "__main__":
     for key in jas_convert_output.keys():
         if key not in dict_agi.keys():
             agi = AliasToAgiConverter.convert_alias_to_agi(key)
-            print(agi)
             if agi == "" and key[0:2].upper() == "AT":
                 agi = AliasToAgiConverter.convert_alias_to_agi(key[2:])
             dict_agi[key] = agi

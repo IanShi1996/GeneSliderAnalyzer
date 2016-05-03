@@ -3,9 +3,9 @@ __author__ = 'Ruian'
 import Parser
 import re
 
-class JasNameConverter:
+class JasToAliasConverter:
     """
-    The JasNameConverter class converts an existing dictionary of JASPAR
+    The JasToAliasConverter class converts an existing dictionary of JASPAR
     names and converts them to their alias, using the BioPython package's
     jaspar module.
 
@@ -18,8 +18,8 @@ class JasNameConverter:
     """
 
     def __init__(self, interaction_dictionary):
-        """ (JasNameConverter, Dict) -> None
-        Initializes the JasNameConverter object
+        """ (JasToAliasConverter, Dict) -> None
+        Initializes the JasToAliasConverter object
 
         Args:
             interaction_dictionary (Dict): A dictionary of interactions,
@@ -33,7 +33,7 @@ class JasNameConverter:
             self.convert_jas_to_alias(interaction_dictionary)
 
     def convert_jas_to_alias(self, jas_data):
-        """ (JasNameConverter, Dictionary) -> Dictionary
+        """ (JasToAliasConverter, Dictionary) -> Dictionary
 
         Return a new dictionary constructed from a interaction dictionary of
         jaspar names and AGI targets by replacing the jaspar names with
@@ -54,7 +54,7 @@ class JasNameConverter:
 
         for jas_key in self.interaction_dictionary_jas.keys():
             # Regex to find jaspar name, and capture alias
-            regex = re.compile(">MA" + jas_key[2:6] + "\.\d (\\b.+)")
+            regex = re.compile(">MA" + jas_key[2:6] + "\.\d (\\b\S+)")
             result = regex.search(jas_data)
             # Check if result was found
             if result:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     user_input = input("Enter data file\n")
 
     parser = Parser.Parser(user_input)
-    converter = JasNameConverter(parser.interaction_dictionary)
+    converter = JasToAliasConverter(parser.interaction_dictionary)
 
     file_name = input("Enter output file name\n")
     output = open(file_name, "w")

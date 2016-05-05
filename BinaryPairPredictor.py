@@ -9,8 +9,8 @@ class BinaryPairPredictor:
     Based on code from Karin Isaev
 
     Attributes:
-        self.indexed_gff (DataFrame): The pandas DataFrame containing information
-            about Arabidopsis gff which indexed by gene id.
+        self.indexed_gff (DataFrame): The pandas DataFrame containing
+            information about Arabidopsis gff which indexed by gene id.
         motif_data (DataFrame): The pandas DataFrame containing motif
             information.
         binary_pairs (List): The list of successfully matched binary pairs.
@@ -39,6 +39,7 @@ class BinaryPairPredictor:
 
         Predicts binary pairs for the data files.
         """
+
         for i in self.motif_data.index:
             # Get gene ids
             gene_1_agi = self.motif_data.agi1[i]
@@ -46,22 +47,20 @@ class BinaryPairPredictor:
 
             # Ensures that genes are also in gff data set
             try:
+                # Get gene information
                 gene_1_info = self.get_gene_info(gene_1_agi)
                 gene_2_info = self.get_gene_info(gene_2_agi)
 
-
                 # Get the strand for genes
-                gene_1_strand = self.get_gene_strand(gene_1_agi)
-                gene_2_strand = self.get_gene_strand(gene_2_agi)
+                gene_1_strand = gene_1_info[3]
+                gene_2_strand = gene_2_info[3]
                 # Get gene start positions
-                gene_1_start = self.get_gene_start(gene_1_agi)
-                gene_2_start = self.get_gene_start(gene_2_agi)
+                gene_1_start = gene_1_info[1]
+                gene_2_start = gene_2_info[1]
 
                 # Get motif id, end
                 motif = self.motif_data.motifid[i]
                 motif_end = int(self.motif_data.motifend[i])
-
-
 
                 # Assign possible binary pair
                 bin_pair_1 = (motif, gene_1_agi)
@@ -78,49 +77,6 @@ class BinaryPairPredictor:
                                       gene_2_start, motif_end)
             except KeyError:
                 continue
-
-    """def execute(self):
-        ''' (BinaryPairPredictor) -> None
-
-        Predicts binary pairs for the data files.
-        '''
-        for i in self.motif_data.index:
-            # Get gene ids
-            gene_1 = self.motif_data.agi1[i]
-            gene_2 = self.motif_data.agi2[i]
-
-            # Ensures that genes are also in gff data set
-            if gene_1 in self.indexed_gff.index and gene_2 in self.indexed_gff.index:
-
-                gene_1_info = self.indexed_gff.loc[gene_1].drop_duplicates()
-                if isinstance(gene_1_info, pd.core.series.Series):
-                    print(gene_1_info.values[0])
-                # Get the strand for genes
-                gene_1_strand = self.get_gene_strand(gene_1)
-                gene_2_strand = self.get_gene_strand(gene_2)
-                # Get gene start positions
-                gene_1_start = self.get_gene_start(gene_1)
-                gene_2_start = self.get_gene_start(gene_2)
-
-                # Get motif id, end
-                motif = self.motif_data.motifid[i]
-                motif_end = int(self.motif_data.motifend[i])
-
-
-
-                # Assign possible binary pair
-                bin_pair_1 = (motif, gene_1)
-                bin_pair_2 = (motif, gene_2)
-
-                # Check if two genes are on the same strand
-                if gene_1_strand == gene_2_strand:
-                    self.process_same(bin_pair_1, bin_pair_2, gene_1_strand,
-                                      gene_1_start, gene_2_start, motif_end)
-
-                elif gene_1_strand != gene_2_strand:
-                    self.process_diff(bin_pair_1, bin_pair_2, gene_1_strand,
-                                      gene_2_strand, gene_1_start,
-                                      gene_2_start, motif_end)"""
 
     def process_same(self, bp1, bp2, strand, g1_start, g2_start, m_end):
         """ (BinaryPairPredictor, Tuple, Tuple, String, int, int, int) -> None
@@ -196,10 +152,19 @@ class BinaryPairPredictor:
                     self.binary_pairs.append(bp2)
 
     def get_gene_info(self, gene_agi):
+        """ (BinaryPairPredictor, String) -> ndarray
+
+        Return an ndarray of the gene specified by the gene_agi.
+
+        Args:
+            gene_agi (String): The agi of the gene to search for.
+        Return:
+            An ndarray which contains gene data.
         """
-        """
+        # Find the target gene, and drop any duplicated isoforms
         gene_info = self.indexed_gff.loc[gene_agi].drop_duplicates()
 
+        # Check what type/how many data points were found
         if isinstance(gene_info, pd.Series):
             # Return values as nd array
             return gene_info.values
@@ -208,7 +173,7 @@ class BinaryPairPredictor:
             if gene_info.size == 4:
                 # Return values as nd array
                 return gene_info.values[0]
-            # Determine smallest isoform to use
+            # Return the smallest isoform to use
             return get_smallest_isoform(gene_info)
 
     def get_gene_start(self, gene):
